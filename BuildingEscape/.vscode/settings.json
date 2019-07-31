@@ -1,0 +1,7 @@
+{
+	"files.exclude": {
+		"G:/repos/03_BuildingEscape/BuildingEscape/.vscode": true,
+		"G:/repos/03_BuildingEscape/BuildingEscape/Content": true,
+		"G:/repos/03_BuildingEscape/BuildingEscape/Intermediate": true
+	}
+}
