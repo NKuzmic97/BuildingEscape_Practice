@@ -1,10 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Grabber.h"
-#include "Engine/World.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/PlayerController.h"
-#include "Engine/Public/DrawDebugHelpers.h"
+
 #define OUT
 
 // Sets default values for this component's properties
@@ -37,19 +34,29 @@ void UGrabber::SetupInputComponent() {
 	}
 }
 
-
-
 void UGrabber::Grab() {
 	UE_LOG(LogTemp, Warning, TEXT("Grab pressed!"))
-		// LINE TRACE and see if we reach any actors with physics body collision channel set
-		GetFirstPhysicsBodyInReach();
-		// If we hit something then attach a physics handle
-		// TODO attach physics handle
+	// LINE TRACE and see if we reach any actors with physics body collision channel set
+	auto HitResult = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = HitResult.GetComponent();
+	/// If we hit something then attach a physics handle
+	auto ActorHit = HitResult.GetActor();
+	if (ActorHit) {
+		PhysicsHandle->GrabComponent(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true // allow rotation
+		);
+	}
 }
 
 void UGrabber::GrabReleased() {
 	UE_LOG(LogTemp, Warning, TEXT("Grab released!"))
 		// TODO release physics handle
+		if (PhysicsHandle->GrabbedComponent) {
+			PhysicsHandle->ReleaseComponent();
+		}
 }
 
 // Called every frame
@@ -57,8 +64,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
+	FVector LineTraceEnd = PlayerViewPointLocation + (PlayerViewPointRotation.Vector()*Reach);
+
 	// if the physics handle is attached
+	if (PhysicsHandle->GrabbedComponent) {
 		// move the object that we're holding
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
+
 
 
 }
