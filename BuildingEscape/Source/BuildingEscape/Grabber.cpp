@@ -26,18 +26,18 @@ void UGrabber::BeginPlay()
 	if(!PhysicsHandle)
 		UE_LOG(LogTemp, Error, TEXT("Physics Handle missing for object: %s !"),*GetOwner()->GetName());
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
-	if (!InputComponent) {
-		UE_LOG(LogTemp, Error, TEXT("Input missing for object: %s !"), *GetOwner()->GetName())
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("Input found for object: %s !"), *GetOwner()->GetName())
+	if (InputComponent) {
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::GrabReleased);
 	}
-	
 }
 
 void UGrabber::Grab() {
 	UE_LOG(LogTemp, Warning, TEXT("Grab pressed!"))
+}
+
+void UGrabber::GrabReleased() {
+	UE_LOG(LogTemp, Warning, TEXT("Grab released!"))
 }
 
 // Called every frame
