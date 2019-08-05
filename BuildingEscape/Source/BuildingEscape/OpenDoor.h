@@ -5,6 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
+#include "Components/PrimitiveComponent.h"
 #include "OpenDoor.generated.h"
 
 
@@ -20,13 +24,13 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
 	void OpenDoor();
 	void CloseDoor();
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 
 private:
 	AActor* Owner; // owning door
@@ -35,10 +39,9 @@ private:
 	float CloseAngle = 0.f;
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
-	UPROPERTY(VisibleAnywhere)
-	AActor* ActorThatOpens; // pawn inherits from actor
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 1.f;
 	float LastDoorOpenTime;
-
+	// Returns total mass in kg
+	float GetTotalMassOfActorsOnPlate();
 };
